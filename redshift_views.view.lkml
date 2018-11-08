@@ -171,7 +171,7 @@ view: redshift_plan_steps {
   #description: "Steps from the query planner for recent queries to Redshift"
   derived_table: {
     # Insert into PDT because redshift won't allow joining certain system tables/views onto others (presumably because they are located only on the leader node)
-    sql_trigger_value: SELECT FLOOR((EXTRACT(epoch from GETDATE()) - 60*60*23)/(60*60*24)) ;; #23h
+    sql_trigger_value: SELECT DATE(CONVERT_TIMEZONE( 'UTC', 'CST', getdate())) ;; #23h
     sql:
         SELECT
         query, nodeid, parentid,
@@ -349,7 +349,7 @@ view: redshift_queries {
   # Recent is last 24 hours of queries
   # (we only see queries related to our rs user_id)
   derived_table: {
-    sql_trigger_value: SELECT FLOOR((EXTRACT(epoch from GETDATE()) - 60*60*22)/(60*60*24)) ;; #22h
+    sql_trigger_value: SELECT DATE(CONVERT_TIMEZONE( 'UTC', 'CST', getdate())) ;; #22h
     sql: SELECT
         wlm.query,
         q.substring::varchar,
@@ -721,7 +721,7 @@ view: redshift_query_execution {
   #description: "Steps from the query planner for recent queries to Redshift"
   derived_table: {
     # Insert into PDT because redshift won't allow joining certain system tables/views onto others (presumably because they are located only on the leader node)
-    sql_trigger_value: SELECT FLOOR((EXTRACT(epoch from GETDATE()) - 60*60*23)/(60*60*24)) ;; #23h
+    sql_trigger_value: SELECT DATE(CONVERT_TIMEZONE( 'UTC', 'CST', getdate())) ;; #23h
     sql:
         SELECT
           query ||'.'|| seg || '.' || step as id,
